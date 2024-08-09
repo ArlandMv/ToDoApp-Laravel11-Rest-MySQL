@@ -15,11 +15,9 @@ class Todo extends Model
         'completed',
     ];
 
-    // for default values
-    protected $casts = [
-        'completed' => 'boolean',
-    ];
-    protected $attributes = [
-        'completed' => false,
+    // protected $timestamps = false;
+    protected $dates = [
+        'created_at',
+        'updated_at',
     ];
 }

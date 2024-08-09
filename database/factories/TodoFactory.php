@@ -2,12 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\Todo;
 use Illuminate\Database\Eloquent\Factories\Factory;
-//use Model\Todo;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Todo>
- */
 class TodoFactory extends Factory
 {
     protected $model = Todo::class;
@@ -17,19 +14,8 @@ class TodoFactory extends Factory
         return [
             'description' => $this->faker->sentence,
             'completed' => $this->faker->boolean,
+            'created_at' => $this->faker->dateTimeBetween('-1 year', '-6 months'), 
+            'updated_at' => $this->faker->dateTimeBetween('-6 months', 'now'),
         ];
     }
-
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    /*
-    public function definition(): array
-    {
-        return [
-            //
-        ];
-    }*/
 }
