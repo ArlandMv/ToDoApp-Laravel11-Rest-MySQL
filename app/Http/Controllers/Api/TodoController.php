@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 
 class TodoController extends Controller
@@ -19,7 +20,7 @@ class TodoController extends Controller
     public function index()
     {
         $todos = Todo::all();
-        return response()->json($todos,Response::HTTP_OK); //200
+        return response()->json($todos,Response::HTTP_OK);
     }
 
     /**
@@ -31,13 +32,6 @@ class TodoController extends Controller
      */
     public function store(Request $request)
     {
-        /*
-        //using Illuminate\Support\Facades\Validator
-        $validator = Validator::make($request->all(), [
-            'description' => 'required|string|max:255',
-            'completed' => 'sometimes|boolean',
-        ]);*/
-
         $validated = $request->validate([
             'description' => 'required|string|max:255',
             'completed' => 'sometimes|boolean',
@@ -45,7 +39,7 @@ class TodoController extends Controller
 
         $validated['completed'] = $validated['completed'] ?? false;
 
-        $todo = Todo::create($validatedData);
+        $todo = Todo::create($validated);
         return response()->json($todo, Response::HTTP_CREATED);
     }
 
@@ -57,10 +51,9 @@ class TodoController extends Controller
      */
     public function show(string $id)
     {
-        //return response()->json(Todo::find($id), Response::HTTP_OK);
         try {
             $todo = Todo::findOrFail($id); 
-            return response()->json($todo, Response::HTTP_OK); // Return JSON response
+            return response()->json($todo, Response::HTTP_OK);
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => 'Todo not found'], Response::HTTP_NOT_FOUND); // Handle not found case
         }
@@ -81,6 +74,7 @@ class TodoController extends Controller
             'completed' => 'sometimes|boolean',
         ]);
 
+        $todo = Todo::findOrFail($id);
         $todo->update($validated);
         return response()->json($todo, Response::HTTP_OK);
     }
